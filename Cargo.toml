@@ -1,0 +1,15 @@
+[package]
+name = "paramgraph"
+version = "0.1.0"
+edition = "2021"
+description = "A building as a parameter graph in plain text: evaluate, check, diff, export"
+license = "MIT"
+repository = "https://github.com/vibecading/paramgraph"
+readme = "README.md"
+keywords = ["architecture", "cad", "bim", "git", "parametric"]
+
+[[bin]]
+name = "pg"
+path = "src/main.rs"
+
+[dependencies]

@@ -1,0 +1,28 @@
+model "Robie House, west enclosure and living-room roof, from photo w1"
+# Origin: outer south-west corner of the ground-floor west enclosure, on grade.
+# x east, y north, z up, metres. Values from vibecading-reverse/cases/robie/result_w1.json.
+# This solve fits its photo to 2.5 px and still misses the HABS drawings: `pg check` fails,
+# which is the point of keeping the checks in the model.
+
+param Lw   = 6.85   P "west face of the enclosure, 22'-5\" (HABS sheets 2 and 6); the scale"
+param rzt  = 4.91   P "top of the roof fascia, 16'-1\" above grade (HABS sheet 6)"
+param Ls   = 4.743  D "south face of the enclosure to the stair-wall jog"
+param h_ct = 2.833  D "top of the stone coping"
+param h_cb = 2.630  D "underside of the coping"
+param h_b  = 0.410  D "bottom of the brick"
+param rx   = 0.995  D "west edge of the roof (not determined: camera spread 17 %)"
+param rys  = -2.123 D "south edge of the roof (not determined: camera spread 7 %)"
+param ryn  = 5.773  D "north edge of the roof (not determined: camera spread 6 %)"
+param fascia = 0.25 A "fascia depth"
+
+box base    D: x 0 .. Ls, y 0 .. Lw, z 0 .. h_b
+box brick   D: x 0 .. Ls, y 0 .. Lw, z h_b .. h_cb
+box coping  D: x 0 .. Ls, y 0 .. Lw, z h_cb .. h_ct
+box roof    D: x rx .. rx + 25, y rys .. ryn, z rzt - fascia .. rzt
+
+check Ls = 4.01 tol 0.15 "HABS sheet 2: 13'-2\""
+check h_ct = 2.56 tol 0.10 "HABS sheet 6: 8'-5\""
+check h_cb = 2.35 tol 0.10 "HABS sheet 6: 7'-9\""
+check h_cb - h_b = 2.04 tol 0.10 "HABS sheet 6: brick 6'-8\", independent of grade"
+check rx = 1.83 tol 0.2 "HABS: 5'-9\" on sheet 4, 6'-3\" on sheet 5"
+check ryn - rys = 8.7 tol 0.3 "HABS sheets 4 and 6: roof 28'-6\" north to south"

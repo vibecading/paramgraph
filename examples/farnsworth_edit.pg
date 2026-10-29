@@ -1,0 +1,41 @@
+model "Farnsworth House, from photo 9970, checked against HABS IL-1105"
+# Origin: west end of the floor slab, south edge, on grade. x east, y north, z up, metres.
+# Values from the photo solve in vibecading-reverse/cases/farnsworth/result_9970.json.
+
+param s      = 7.010  P "column bay, 22'-0\" (HABS sheet 3); the one value used for scale"
+param c      = 1.752  D "west cantilever, slab end to column 1 axis"
+param W      = 9.500  A "width of the slabs"
+param zf_t   = 1.799  D "top of the floor slab above grade"
+param zf_b   = 1.417  D "underside of the floor slab"
+param zr_t   = 5.235  D "top of the roof fascia"
+param zr_b   = 4.676  D "underside of the roof slab (ceiling)"
+param g_x    = 6.752  D "west glass wall from the slab end"
+param g_y    = 0.202  D "glass set back from the slab edge (not determined: spread 52 % across camera models)"
+param x_te   = 9.737  D "east edge of the lower terrace"
+param y_tf   = -2.920 D "south edge of the terrace (not determined: spread 10 %)"
+param y_tn   = 5.938  D "north edge of the terrace (not determined: spread 7 %)"
+param h_t    = 0.907  D "top of the terrace"
+param d_t    = 0.478  D "terrace slab depth"
+param col    = 0.2    A "W8 column flange width"
+param t_len  = 16.8   A "terrace length, its west end is out of frame"
+
+let L = 2*c + 3*s "length: two cantilevers and three bays, symmetric"
+
+box floor_slab D: x 0 .. L, y 0 .. W, z zf_b .. zf_t
+box roof_slab  D: x 0 .. L, y 0 .. W, z zr_b .. zr_t
+box col_S[i in 0..2] D: x c + i*s - col/2 .. c + i*s + col/2, y -col .. 0, z 0 .. zr_t - 0.03
+box col_N[i in 0..2] D: x c + i*s - col/2 .. c + i*s + col/2, y W .. W + col, z 0 .. zr_t - 0.03
+box col_S_east[i in 2..4] I: x c + i*s - col/2 .. c + i*s + col/2, y -col .. 0, z 0 .. zr_t - 0.03
+box col_N_east[i in 2..4] I: x c + i*s - col/2 .. c + i*s + col/2, y W .. W + col, z 0 .. zr_t - 0.03
+box glass D: x g_x .. L - g_y, y g_y .. W - g_y, z zf_t .. zr_b
+
+check c = 1.724 tol 0.052 "HABS: cantilever 5'-7 7/8\""
+check W = 8.738 tol 0.262 "HABS: width 28'-8\""
+check L = 23.57 tol 0.707 "HABS: length 77'-4 1/8\""
+check g_x = 6.712 tol 0.201 "HABS: column 1 to glass 16'-4 3/8\" plus cantilever"
+check zf_t = 1.84 tol 0.055 "HABS section A-A, scaled"
+check zf_b = 1.43 tol 0.043 "HABS section A-A, scaled"
+check zr_b - zf_t = 2.870 tol 0.086 "HABS: floor to ceiling, 11'-9\" less 2'-4\""
+check zr_t - zf_t = 3.404 tol 0.102 "HABS: floor to cornice, 13'-6\" less 2'-4\""
+check x_te = 10.135 tol 0.304 "HABS: terrace east end"
+box carport A: x L + 2 .. L + 8, y 0 .. 6, z 0 .. 2.6

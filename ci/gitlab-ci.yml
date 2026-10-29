@@ -1,0 +1,49 @@
+# Model review for merge requests on a self-hosted GitLab (CE is enough).
+# Copy into the project as .gitlab-ci.yml. In Settings > Merge requests, turn on
+# "Pipelines must succeed": a merge request whose model fails a check, or
+# conflicts with the target branch in design terms, then cannot be merged from
+# the web button (which merges with plain git and never runs pg's merge driver).
+#
+# The runner needs pg (cargo build --release in this repository, or a released
+# binary) and python3 with opencv for the preview picture.
+
+stages: [review]
+
+model-review:
+  stage: review
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+      changes: ["**/*.pg"]
+  variables:
+    GIT_DEPTH: "0"
+  script:
+    - set -o pipefail  # otherwise `| tee` hides a failing check
+    - git fetch origin "$CI_MERGE_REQUEST_TARGET_BRANCH_NAME"
+    - BASE=$(git merge-base HEAD "origin/$CI_MERGE_REQUEST_TARGET_BRANCH_NAME")
+    - mkdir -p review
+    - status=0
+    - |
+      for f in $(git diff --name-only "$BASE" HEAD -- '*.pg'); do
+        name=$(echo "$f" | tr '/' '_')
+        echo "== $f"
+        # 1. the model's own checks against drawings and rules
+        pg check "$f" | tee "review/$name.checks.txt" || status=1
+        # 2. what this branch changes, in design terms and as geometry
+        if git cat-file -e "$BASE:$f" 2>/dev/null; then
+          git show "$BASE:$f" > "review/$name.base.pg"
+          pg diff "review/$name.base.pg" "$f" | tee "review/$name.diff.txt"
+          pg diff-obj "review/$name.base.pg" "$f" "review/$name.diff.obj"
+          python3 tools/preview.py "review/$name.diff.obj" "review/$name.diff.png" || true
+        fi
+        # 3. would it merge with the current target, and is that combination new?
+        if git cat-file -e "origin/$CI_MERGE_REQUEST_TARGET_BRANCH_NAME:$f" 2>/dev/null; then
+          git show "origin/$CI_MERGE_REQUEST_TARGET_BRANCH_NAME:$f" > "review/$name.target.pg"
+          pg merge "review/$name.base.pg" "review/$name.target.pg" "$f" "review/$name.merged.pg" \
+            | tee "review/$name.merge.txt" || status=1
+        fi
+      done
+    - exit $status
+  artifacts:
+    when: always
+    expose_as: "model review"
+    paths: [review/]
