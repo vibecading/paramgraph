@@ -5,6 +5,7 @@ type: software
 authors:
   - family-names: "Tkachenko"
     given-names: "Alexey"
+    orcid: "https://orcid.org/0009-0006-0337-5264"
   - name: "vibecading"
     website: "https://github.com/vibecading"
 repository-code: "https://github.com/vibecading/paramgraph"
