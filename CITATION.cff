@@ -1,0 +1,17 @@
+cff-version: 1.2.0
+message: "If you use this software or its method, please cite it as below."
+title: "paramgraph: a building as a parameter graph in plain text, with semantic diff and three-way merge"
+type: software
+authors:
+  - name: "vibecading"
+    website: "https://github.com/vibecading"
+repository-code: "https://github.com/vibecading/paramgraph"
+license: MIT
+version: "0.1.0"
+date-released: "2026-10-29"
+keywords:
+  - architecture
+  - BIM
+  - parametric design
+  - version control
+  - three-way merge
