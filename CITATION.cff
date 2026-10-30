@@ -8,6 +8,14 @@ authors:
     orcid: "https://orcid.org/0009-0006-0337-5264"
   - name: "vibecading"
     website: "https://github.com/vibecading"
+doi: "10.5281/zenodo.23777073"
+identifiers:
+  - type: doi
+    value: "10.5281/zenodo.23777073"
+    description: "All versions"
+  - type: doi
+    value: "10.5281/zenodo.23777074"
+    description: "Version 0.1.0"
 repository-code: "https://github.com/vibecading/paramgraph"
 license: MIT
 version: "0.1.0"
