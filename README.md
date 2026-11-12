@@ -1,6 +1,7 @@
 # paramgraph
 
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.23777073.svg)](https://doi.org/10.5281/zenodo.23777073)
+[![test](https://github.com/vibecading/paramgraph/actions/workflows/test.yml/badge.svg)](https://github.com/vibecading/paramgraph/actions/workflows/test.yml)
 
 A building as a parameter graph in plain text. The model is data, not code:
 named parameters with a grade saying where each number came from, rules
